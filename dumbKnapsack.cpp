@@ -13,11 +13,10 @@ int main()
 
 	file.open(filename.c_str());
 
-	int cost;
-	file >> cost;
+	int totalcost;
+	file >> totalcost;
 
-	cout << cost;
-	int a[]
+	cout << totalcost << endl;
 	string number;
 	while(getline(file, number, ','))
 	{
