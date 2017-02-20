@@ -1,101 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+//using treeSort;
 
-public class phase1
+
+namespace first
 {
-	public struct item{
-		public string name;
-		public decimal cost;
-		public decimal value;
-	}
-
-	public Tuple<int, List<item>> CSVin(string filename)
+	public class phase1
 	{
-		List<item> knapsack = new List<item>();
-
-		string[] lines = System.IO.File.ReadAllLines(@filename);
-
-		int cap;
-		cap = int.Parse(lines[0]);
-
-		foreach (var stuff in lines.Skip(1))
+		public struct item
 		{
-			var temp = stuff.Split(',');
-
-			item thing;
-
-			thing.name = temp[0];
-			thing.cost = int.Parse(temp[1]);
-			thing.value = int.Parse(temp[2]);
-			knapsack.Add(thing);
+			public string name;
+			public double cost;
+			public double value;
 		}
 
-		return Tuple.Create(cap, knapsack);
-	}
-
-	public decimal greedySearch(List<item> knapsack, int cap)
-	{
-		decimal soFar = 0, totalCost = 0;
-
-		foreach (var next in knapsack)
+		public Tuple<int, List<item>> CSVin(string filename)
 		{
-			if ((totalCost += next.cost) <= cap)
+			List<item> knapsack = new List<item>();
+
+			string[] lines = System.IO.File.ReadAllLines(@filename);
+
+			int cap;
+			cap = int.Parse(lines[0]);
+
+			foreach (var stuff in lines.Skip(1))
 			{
-				soFar += next.value;
+				var temp = stuff.Split(',');
+
+				item thing;
+
+				thing.name = temp[0];
+				thing.cost = int.Parse(temp[1]);
+				thing.value = int.Parse(temp[2]);
+				knapsack.Add(thing);
 			}
-			else
-				break;
+
+			return Tuple.Create(cap, knapsack);
 		}
-		return soFar;
-	}
 
-	public decimal partial(List<item> knapsack, int cap)
-	{
-		decimal soFar = 0, totalCost = 0;
-
-		foreach (var next in knapsack)
+		public double greedySearch(List<item> knapsack, int cap)
 		{
-			if ((totalCost + next.cost) <= cap)
+			double soFar = 0, totalCost = 0;
+
+			foreach (var next in knapsack)
 			{
-				totalCost += next.cost;
-				soFar += next.value;
+				if ((totalCost += next.cost) <= cap)
+				{
+					soFar += next.value;
+				}
+				else
+					break;
 			}
-			else
-			{
-				soFar += ((next.value * (cap - totalCost)) / next.cost);
-				break;
-			}
+			return soFar;
 		}
-		return soFar;
-	}
 
-	public static void Main(string[] args)
-	{
-		phase1 phase = new phase1();
-		List<item> knapsack = new List<item>();
+		public double partial(List<item> knapsack, int cap)
+		{
+			double soFar = 0, totalCost = 0;
 
-		string filename;
-		Console.Write("enter the filename: ");
-		filename = Console.ReadLine();
+			foreach (var next in knapsack)
+			{
+				if ((totalCost + next.cost) <= cap)
+				{
+					totalCost += next.cost;
+					soFar += next.value;
+				}
+				else
+				{
+					soFar += ((next.value * (cap - totalCost)) / next.cost);
+					break;
+				}
+			}
+			return soFar;
+		}
 
-		Tuple<int, List<item>> tuple = phase.CSVin(filename);
+		public static void Main()
+		{
+			phase1 phase = new phase1();
+			List<item> knapsack = new List<item>();
 
-		int capacity = tuple.Item1;
-		knapsack = tuple.Item2;
+			string filename;
+			Console.Write("enter the filename: ");
+			filename = Console.ReadLine();
 
-		decimal highVal = phase.greedySearch(knapsack.OrderByDescending(x => x.value).ToList(), capacity);
-		decimal lowCost = phase.greedySearch(knapsack.OrderBy(x => x.cost).ToList(), capacity);
-		decimal ratio = phase.greedySearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
-		decimal part = phase.partial(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+			Tuple<int, List<item>> tuple = phase.CSVin(filename);
 
-		Console.WriteLine("highVal: " + highVal);
-		Console.WriteLine("lowCost: " + lowCost);
-		Console.WriteLine("ratio: " + ratio);
-		Console.WriteLine("partial: " + part);
-		Console.ReadKey();
+			int capacity = tuple.Item1;
+			knapsack = tuple.Item2;
+
+
+			//tree = makeTree(knapsack);
+
+			double highVal = phase.greedySearch(knapsack.OrderByDescending(x => x.value).ToList(), capacity);
+			double lowCost = phase.greedySearch(knapsack.OrderBy(x => x.cost).ToList(), capacity);
+			double ratio = phase.greedySearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+			double part = phase.partial(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+
+			Console.WriteLine("highVal: " + highVal);
+			Console.WriteLine("lowCost: " + lowCost);
+			Console.WriteLine("ratio: " + ratio);
+			Console.WriteLine("partial: " + part);
+			Console.ReadKey();
+		}
 	}
 }
-
 
 
