@@ -43,7 +43,7 @@ namespace first
 			double bestValue = 0;
 			int bestPosition = 0;
 			int size = knapsack.Count();
-			TimeSpan baseInterval = new TimeSpan(0, 2, 0);
+			TimeSpan baseInterval = new TimeSpan(0, 10, 0);
 
 			var permutations = (long)Math.Pow(2, size);
 
@@ -76,6 +76,47 @@ namespace first
 			}
 			return Tuple.Create(bestValue, include);
 		}
+
+		public Tuple<double, List<item>> betterExhaustiveSearch(List<item> knapsack, int cap, Stopwatch time)
+		{
+			double bestValue = 0;
+			int bestPosition = 0;
+			int size = knapsack.Count();
+			TimeSpan baseInterval = new TimeSpan(0, 10, 0);
+
+			var permutations = (long)Math.Pow(2, size);
+
+			for (int i = 0; i < permutations; i++)
+			{
+				double total = 0;
+				double weight = 0;
+				for (int j = 0; j < size; j++)
+				{
+					if (((i >> j) & 1) != 1)
+						continue;
+					total += knapsack[j].value;
+					weight += knapsack[j].cost;
+
+					if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
+						break;
+				}
+				if (weight <= cap && total > bestValue)
+				{
+					bestPosition = i;
+					bestValue = total;
+				}
+				if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
+					break;
+			}
+			var include = new List<item>();
+			for (int j = 0; j < size; j++)
+			{
+				if (((bestPosition >> j) & 1) == 1)
+					include.Add(knapsack[j]);
+			}
+			return Tuple.Create(bestValue, include);
+		}
+
 
 		public Tuple<double, List<item>> greedySearch(List<item> knapsack, int cap)
 		{
@@ -143,28 +184,28 @@ namespace first
 
 			Tuple<double, List<item>> tuple1 = phase.greedySearch(knapsack.OrderByDescending(x => x.value).ToList(), capacity);
 			double highVal = tuple1.Item1;
-			highvalList = tuple1.Item2.OrderByDescending(x => x.name).ToList();
+			highvalList = tuple1.Item2.OrderBy(x => x.name).ToList();
 			string highList = "";
 			foreach (var thing in highvalList)
 				highList += thing.name + "," + Convert.ToString(thing.cost)  + "," + Convert.ToString(thing.value) + "\n";
 
 			Tuple<double, List<item>> tuple2 = phase.greedySearch(knapsack.OrderBy(x => x.cost).ToList(), capacity);
 			double lowCost = tuple2.Item1;
-			lowCostList = tuple2.Item2.OrderByDescending(x => x.name).ToList();
+			lowCostList = tuple2.Item2.OrderBy(x => x.name).ToList();
 			string lowList = "";
 			foreach (var thing in lowCostList)
 				lowList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
 			Tuple<double, List<item>> tuple3 = phase.greedySearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
 			double ratio = tuple3.Item1;
-			ratioList = tuple3.Item2.OrderByDescending(x => x.name).ToList();
+			ratioList = tuple3.Item2.OrderBy(x => x.name).ToList();
 			string ratList = "";
 			foreach (var thing in ratioList)
 				ratList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
 			Tuple<double, List<item>> tuple4 = phase.partial(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
 			double part = tuple4.Item1;
-			partList = tuple4.Item2.OrderByDescending(x => x.name).ToList();
+			partList = tuple4.Item2.OrderBy(x => x.name).ToList();
 			string parList = "";
 			foreach (var thing in partList)
 				parList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
@@ -175,7 +216,7 @@ namespace first
 			TimeSpan buildTime = time.Elapsed;
 			string timeSpent = Convert.ToString(buildTime);
 
-			List<item> exList = tuple5.Item2.OrderByDescending(x => x.name).ToList();
+			List<item> exList = tuple5.Item2.OrderBy(x => x.name).ToList();
 			double exhaustive = tuple5.Item1;
 			string exhList = "";
 			foreach (var thing in exList)
@@ -192,7 +233,7 @@ namespace first
 			else if (minBound == ratio)
 				greedyMin = ratList;
 			else
-				greedyMin = parList;
+				greedyMin = "Final value is partially included: \n" + parList;
 
 			string greedyMax = "";
 			if (maxBound == highVal)
@@ -202,7 +243,7 @@ namespace first
 			else if (maxBound == ratio)
 				greedyMax = ratList;
 			else
-				greedyMax = parList;
+				greedyMax = "Final value is partially included: \n" + parList;
 
 
 			string text = "Filename: " + filename + "\n\nCapacity: " + capacity + "\n\nGreedy minimum boundry: \n" + greedyMin + "\nGreedy maximum boundry: \n" + greedyMax + "\nOptimal Solution: \n" + exhList + "\nDumb search completed after " + timeSpent;
