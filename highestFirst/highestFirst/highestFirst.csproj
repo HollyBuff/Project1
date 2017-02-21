@@ -5,4 +5,7 @@
     <TargetFramework>netcoreapp1.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType></DebugType>
+  </PropertyGroup>
 </Project>
