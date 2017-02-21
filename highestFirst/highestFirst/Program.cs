@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace first
 {
@@ -37,11 +38,12 @@ namespace first
 		}
 
 
-		public Tuple<double, List<item>> ehaustiveSearch(List<item> knapsack, int cap)
+		public Tuple<double, List<item>> dumbExhaustiveSearch(List<item> knapsack, int cap, Stopwatch time)
 		{
 			double bestValue = 0;
 			int bestPosition = 0;
 			int size = knapsack.Count();
+			TimeSpan baseInterval = new TimeSpan(0, 2, 0);
 
 			var permutations = (long)Math.Pow(2, size);
 
@@ -55,12 +57,16 @@ namespace first
 						continue;
 					total += knapsack[j].value;
 					weight += knapsack[j].cost;
+					if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
+						break;
 				}
 				if (weight <= cap && total > bestValue)
 				{
 					bestPosition = i;
 					bestValue = total;
 				}
+				if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
+					break;
 			}
 			var include = new List<item>();
 			for (int j = 0; j < size; j++)
@@ -71,25 +77,28 @@ namespace first
 			return Tuple.Create(bestValue, include);
 		}
 
-		public double greedySearch(List<item> knapsack, int cap)
+		public Tuple<double, List<item>> greedySearch(List<item> knapsack, int cap)
 		{
 			double soFar = 0, totalCost = 0;
+			var include = new List<item>();
 
 			foreach (var next in knapsack)
 			{
 				if ((totalCost += next.cost) <= cap)
 				{
 					soFar += next.value;
+					include.Add(next);
 				}
 				else
 					break;
 			}
-			return soFar;
+			return Tuple.Create(soFar, include);
 		}
 
-		public double partial(List<item> knapsack, int cap)
+		public Tuple<double, List<item>> partial(List<item> knapsack, int cap)
 		{
 			double soFar = 0, totalCost = 0;
+			var include = new List<item>();
 
 			foreach (var next in knapsack)
 			{
@@ -97,51 +106,129 @@ namespace first
 				{
 					totalCost += next.cost;
 					soFar += next.value;
+					include.Add(next);
 				}
 				else
 				{
 					soFar += ((next.value * (cap - totalCost)) / next.cost);
+					include.Add(next);
 					break;
 				}
 			}
-			return soFar;
+			return Tuple.Create(soFar,include);
 		}
 
 		public static void Main()
 		{
 			phase1 phase = new phase1();
 			List<item> knapsack = new List<item>();
+			List<item> highvalList = new List<item>();
+			List<item> lowCostList = new List<item>();
+			List<item> ratioList = new List<item>();
+			List<item> partList = new List<item>();
 
 			string filename;
 			Console.Write("enter the filename: ");
 			filename = Console.ReadLine();
 
-			Tuple<int, List<item>> tuple = phase.CSVin(filename);
+				Stopwatch time = new Stopwatch();
 
-			int capacity = tuple.Item1;
-			knapsack = tuple.Item2;
+				Tuple<int, List<item>> tuple = phase.CSVin(filename);
+
+				int capacity = tuple.Item1;
+				knapsack = tuple.Item2;
 
 
-			//tree = makeTree(knapsack);
+				//tree = makeTree(knapsack);
 
-			double highVal = phase.greedySearch(knapsack.OrderByDescending(x => x.value).ToList(), capacity);
-			double lowCost = phase.greedySearch(knapsack.OrderBy(x => x.cost).ToList(), capacity);
-			double ratio = phase.greedySearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
-			double part = phase.partial(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+			Tuple<double, List<item>> tuple1 = phase.greedySearch(knapsack.OrderByDescending(x => x.value).ToList(), capacity);
+			double highVal = tuple1.Item1;
+			highvalList = tuple1.Item2.OrderByDescending(x => x.name).ToList();
+			string highList = "";
+			foreach (var thing in highvalList)
+				highList += thing.name + "," + Convert.ToString(thing.cost)  + "," + Convert.ToString(thing.value) + "\n";
 
-			Tuple<double, List<item>> tuple2 = phase.ehaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
-			List <item> exList = tuple2.Item2;
-			double exhaustive = tuple2.Item1;
+			Tuple<double, List<item>> tuple2 = phase.greedySearch(knapsack.OrderBy(x => x.cost).ToList(), capacity);
+			double lowCost = tuple2.Item1;
+			lowCostList = tuple2.Item2.OrderByDescending(x => x.name).ToList();
+			string lowList = "";
+			foreach (var thing in lowCostList)
+				lowList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
-			Console.WriteLine("highVal: " + highVal);
-			Console.WriteLine("lowCost: " + lowCost);
-			Console.WriteLine("ratio: " + ratio);
-			Console.WriteLine("partial: " + part);
+			Tuple<double, List<item>> tuple3 = phase.greedySearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+			double ratio = tuple3.Item1;
+			ratioList = tuple3.Item2.OrderByDescending(x => x.name).ToList();
+			string ratList = "";
+			foreach (var thing in ratioList)
+				ratList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
-			Console.Write("exhaustive: " + exhaustive);
+			Tuple<double, List<item>> tuple4 = phase.partial(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity);
+			double part = tuple4.Item1;
+			partList = tuple4.Item2.OrderByDescending(x => x.name).ToList();
+			string parList = "";
+			foreach (var thing in partList)
+				parList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
+
+			time.Start();
+			Tuple<double, List<item>> tuple5 = phase.dumbExhaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity, time);
+			time.Stop();
+			TimeSpan buildTime = time.Elapsed;
+			string timeSpent = Convert.ToString(buildTime);
+
+			List<item> exList = tuple5.Item2.OrderByDescending(x => x.name).ToList();
+			double exhaustive = tuple5.Item1;
+			string exhList = "";
 			foreach (var thing in exList)
-				Console.Write(thing.name + ",");
-			Console.ReadKey();
+				exhList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
+
+			double minBound = Math.Min(Math.Min(highVal, lowCost), Math.Min(ratio, part));
+			double maxBound = Math.Max(Math.Max(highVal, lowCost), Math.Max(ratio, part));
+
+			string greedyMin = "";
+			if (minBound == highVal)
+				greedyMin = highList;
+			else if (minBound == lowCost)
+				greedyMin = lowList;
+			else if (minBound == ratio)
+				greedyMin = ratList;
+			else
+				greedyMin = parList;
+
+			string greedyMax = "";
+			if (maxBound == highVal)
+				greedyMax = highList;
+			else if (maxBound == lowCost)
+				greedyMax = lowList;
+			else if (maxBound == ratio)
+				greedyMax = ratList;
+			else
+				greedyMax = parList;
+
+
+			string text = "Filename: " + filename + "\n\nCapacity: " + capacity + "\n\nGreedy minimum boundry: \n" + greedyMin + "\nGreedy maximum boundry: \n" + greedyMax + "\nOptimal Solution: \n" + exhList + "\nDumb search completed after " + timeSpent;
+
+
+			string file = filename;
+			file = System.IO.Path.GetFileNameWithoutExtension(@file);
+			file += ".txt";
+
+			System.IO.File.WriteAllText(@file, text);
+
+
+
+		//	Console.WriteLine("highVal: " + highVal);
+		//	Console.WriteLine("lowCost: " + lowCost);
+		//	Console.WriteLine("ratio: " + ratio);
+		//	Console.WriteLine("partial: " + part);
+
+		//	Console.Write("exhaustive: " + exhaustive);
+		//	Console.WriteLine();
+		//	foreach (var thing in exList)
+		//		Console.Write(thing.name + ",");
+		//	Console.WriteLine();
+		//	Console.WriteLine("Exhaustive search completed after " + buildTime);
+		//	Console.ReadKey();
+		//
 		}
 	}
 }
