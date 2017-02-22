@@ -77,7 +77,7 @@ namespace first
 			return Tuple.Create(bestValue, include);
 		}
 
-		public Tuple<double, List<item>> betterExhaustiveSearch(List<item> knapsack, int cap, Stopwatch time)
+		public Tuple<double, List<item>> betterExhaustiveSearch(List<item> knapsack, int cap, Stopwatch time, double min)
 		{
 			double bestValue = 0;
 			int bestPosition = 0;
@@ -97,7 +97,14 @@ namespace first
 					total += knapsack[j].value;
 					weight += knapsack[j].cost;
 
-					if (total > cap)
+					int remaining = j - size;
+					double valueLeft = 0;
+					for (int m = 0; m <= remaining; m++)
+					{
+						valueLeft += knapsack[m].value;
+					}
+
+					if (total > cap || valueLeft < min)
 						break;
 
 					if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
@@ -225,9 +232,13 @@ namespace first
 			foreach (var thing in exList)
 				exhList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
+
+			double minBound = Math.Min(Math.Min(highVal, lowCost), Math.Min(ratio, part));
+			double maxBound = Math.Max(Math.Max(highVal, lowCost), Math.Max(ratio, part));
+
 			time.Reset();
 			time.Start();
-			Tuple<double, List<item>> tuple6 = phase.dumbExhaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity, time);
+			Tuple<double, List<item>> tuple6 = phase.betterExhaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity, time, minBound);
 			time.Stop();
 			TimeSpan buildTime2 = time.Elapsed;
 			string timeSpent2 = Convert.ToString(buildTime2);
@@ -237,9 +248,6 @@ namespace first
 			string pruneList = "";
 			foreach (var thing in exList)
 				pruneList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
-
-			double minBound = Math.Min(Math.Min(highVal, lowCost), Math.Min(ratio, part));
-			double maxBound = Math.Max(Math.Max(highVal, lowCost), Math.Max(ratio, part));
 
 			string greedyMin = "";
 			if (minBound == highVal)
