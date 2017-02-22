@@ -97,6 +97,9 @@ namespace first
 					total += knapsack[j].value;
 					weight += knapsack[j].cost;
 
+					if (total > cap)
+						break;
+
 					if (TimeSpan.Compare(time.Elapsed, baseInterval) == 1)
 						break;
 				}
@@ -211,7 +214,7 @@ namespace first
 				parList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
 			time.Start();
-			Tuple<double, List<item>> tuple5 = phase.dumbExhaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity, time);
+			Tuple<double, List<item>> tuple5 = phase.dumbExhaustiveSearch(knapsack, capacity, time);
 			time.Stop();
 			TimeSpan buildTime = time.Elapsed;
 			string timeSpent = Convert.ToString(buildTime);
@@ -221,6 +224,19 @@ namespace first
 			string exhList = "";
 			foreach (var thing in exList)
 				exhList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
+
+			time.Reset();
+			time.Start();
+			Tuple<double, List<item>> tuple6 = phase.dumbExhaustiveSearch(knapsack.OrderByDescending(x => x.value / x.cost).ToList(), capacity, time);
+			time.Stop();
+			TimeSpan buildTime2 = time.Elapsed;
+			string timeSpent2 = Convert.ToString(buildTime2);
+
+			List<item> prunedList = tuple6.Item2.OrderBy(x => x.name).ToList();
+			double pruned = tuple5.Item1;
+			string pruneList = "";
+			foreach (var thing in exList)
+				pruneList += thing.name + "," + Convert.ToString(thing.cost) + "," + Convert.ToString(thing.value) + "\n";
 
 			double minBound = Math.Min(Math.Min(highVal, lowCost), Math.Min(ratio, part));
 			double maxBound = Math.Max(Math.Max(highVal, lowCost), Math.Max(ratio, part));
@@ -246,7 +262,7 @@ namespace first
 				greedyMax = "Final value is partially included: \n" + parList;
 
 
-			string text = "Filename: " + filename + "\n\nCapacity: " + capacity + "\n\nGreedy minimum boundry: \n" + greedyMin + "\nGreedy maximum boundry: \n" + greedyMax + "\nOptimal Solution: \n" + exhList + "\nDumb search completed after " + timeSpent;
+			string text = "Filename: " + filename + "\n\nCapacity: " + capacity + "\n\nGreedy minimum boundry: \n" + greedyMin + "\nGreedy maximum boundry: \n" + greedyMax + "\nOptimal Solution: \n" + exhList + "\nDumb search completed after " + timeSpent + "\nSmarter search completed after " + timeSpent2;
 
 
 			string file = filename;
