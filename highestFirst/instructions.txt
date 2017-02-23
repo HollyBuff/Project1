@@ -1,0 +1,13 @@
+The code is written in c# targeting the .NET Core framework 2.0
+    Visual Studio is required to run the program
+
+source code is located in knapsack/highestFirst/Program.cs
+
+to view the entire code base, run knapsack/highestFirst.sln in visual studio
+
+If a new test file is to be tested, it must first be placed in knapsack/highestFirst/bin/Debug/netcoreapp1.0/
+    Then run the program and input the name of the file to test it.
+    Output is placed within the same folder with the same name as the test file, renamed as a .txt
+
+knapsack/Output \files contains the output files of all test files used in making the program 
+
