@@ -1,0 +1,21 @@
+Filename: G2.csv
+
+Capacity: 15
+
+Greedy minimum boundry: 
+
+with total value of 0
+
+Greedy maximum boundry: 
+Final value is partially included: 
+v,18,80
+
+with total value of 66.6666666666667
+
+Optimal Solution: 
+
+With a value of 0
+
+Dumb search completed after 00:01:06.1501793
+Smarter search completed after 00:00:07.9416493
+Sorted smarter search completed after 00:00:09.1991608

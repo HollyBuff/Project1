@@ -1,0 +1,42 @@
+Filename: k10.csv
+
+Capacity: 30
+
+Greedy minimum boundry: 
+a,3,6
+c,4,4
+e,4,5
+f,1,2
+g,6,8
+i,3,6
+j,5,9
+
+with total value of 40
+
+Greedy maximum boundry: 
+Final value is partially included: 
+a,3,6
+c,4,4
+e,4,5
+f,1,2
+g,6,8
+h,8,6
+i,3,6
+j,5,9
+
+with total value of 43
+
+Optimal Solution: 
+a,3,6
+e,4,5
+f,1,2
+g,6,8
+h,8,6
+i,3,6
+j,5,9
+
+With a value of 42
+
+Dumb search completed after 00:00:00.0028222
+Smarter search completed after 00:00:00.0011521
+Sorted smarter search completed after 00:00:00.0012143

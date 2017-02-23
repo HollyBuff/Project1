@@ -1,0 +1,81 @@
+Filename: B1.csv
+
+Capacity: 300
+
+Greedy minimum boundry: 
+b,15,93
+c,17,94
+d,14,95
+e,19,91
+f,10,92
+h,11,100
+i,12,98
+j,13,95
+k,17,91
+l,16,97
+m,14,93
+n,13,96
+o,18,98
+p,20,100
+r,16,94
+s,17,96
+t,13,98
+u,18,91
+v,10,92
+w,15,99
+
+with total value of 1903
+
+Greedy maximum boundry: 
+Final value is partially included: 
+a,12,90
+b,15,93
+c,17,94
+d,14,95
+f,10,92
+h,11,100
+i,12,98
+j,13,95
+k,17,91
+l,16,97
+m,14,93
+n,13,96
+o,18,98
+p,20,100
+q,12,90
+r,16,94
+s,17,96
+t,13,98
+u,18,91
+v,10,92
+w,15,99
+
+with total value of 1977
+
+Optimal Solution: 
+b,15,93
+c,17,94
+d,14,95
+e,19,91
+f,10,92
+h,11,100
+i,12,98
+j,13,95
+k,17,91
+l,16,97
+m,14,93
+n,13,96
+o,18,98
+p,20,100
+r,16,94
+s,17,96
+t,13,98
+u,18,91
+v,10,92
+w,15,99
+
+With a value of 1903
+
+Dumb search completed after 00:00:15.0584420
+Smarter search completed after 00:00:01.3315099
+Sorted smarter search completed after 00:00:01.3541272

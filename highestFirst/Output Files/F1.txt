@@ -1,0 +1,39 @@
+Filename: F1.csv
+
+Capacity: 50
+
+Greedy minimum boundry: 
+A,2,20
+B,4,19
+C,5,18
+G,14,22
+H,13,23
+I,12,24
+
+with total value of 126
+
+Greedy maximum boundry: 
+Final value is partially included: 
+A,2,20
+B,4,19
+C,5,18
+D,10,13
+G,14,22
+H,13,23
+I,12,24
+
+with total value of 126
+
+Optimal Solution: 
+A,2,20
+B,4,19
+C,5,18
+G,14,22
+H,13,23
+I,12,24
+
+With a value of 126
+
+Dumb search completed after 00:10:00.0000460
+Smarter search completed after 00:02:43.6925882
+Sorted smarter search completed after 00:02:48.3723841

@@ -1,0 +1,67 @@
+Filename: B3.csv
+
+Capacity: 1637333
+
+Greedy minimum boundry: 
+A,2,1
+B,15,6
+C,40,18
+D,2000,1003
+E,110,50
+F,235,122
+G,502,226
+H,12150,7101
+I,843,420
+J,6421,3022
+L,72,36
+M,50920,23789
+N,5120,2500
+O,302154,150000
+P,84613,45678
+Q,712420,319471
+S,43210,22120
+T,100000,52015
+U,245810,122905
+V,8621,4403
+W,900,420
+X,23210,12100
+Y,6,3
+
+with total value of 767409
+
+Greedy maximum boundry: 
+Final value is partially included: 
+F,235,122
+H,12150,7101
+K,1000000,602550
+P,84613,45678
+R,900600,460300
+S,43210,22120
+T,100000,52015
+X,23210,12100
+
+with total value of 932795.343215634
+
+Optimal Solution: 
+A,2,1
+B,15,6
+C,40,18
+H,12150,7101
+I,843,420
+J,6421,3022
+K,1000000,602550
+M,50920,23789
+N,5120,2500
+O,302154,150000
+P,84613,45678
+S,43210,22120
+T,100000,52015
+V,8621,4403
+X,23210,12100
+Y,6,3
+
+With a value of 925726
+
+Dumb search completed after 00:01:09.6679877
+Smarter search completed after 00:00:05.6405443
+Sorted smarter search completed after 00:00:05.6830000
